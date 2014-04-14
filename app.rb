@@ -1,6 +1,8 @@
 require './idea'
 
 class IdeaBoxApp < Sinatra::Base
+	set :method_override, true
+
 	configure :development do
 		register Sinatra::Reloader
 	end
@@ -10,13 +12,16 @@ class IdeaBoxApp < Sinatra::Base
 	end
 	
 	get '/' do
-		erb :index
+		erb :index, locals: { ideas: Idea.all }
 	end
 
 	post '/' do
-		idea = Idea.new
+		idea = Idea.new(params['idea_title'], params['idea_description'])
 		idea.save
+		redirect '/'
+	end
 
-		"creating an idea!"
+	delete '/:id' do |id|
+		"DELETING an idea!"
 	end
 end
